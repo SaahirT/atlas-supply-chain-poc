@@ -1,10 +1,10 @@
 # ATLAS — Advanced Therapies Logistics & Scheduling
 
-ATLAS is a proof-of-concept logistics and risk-monitoring dashboard designed to explore how advanced therapy shipments can be tracked across New Jersey.
+ATLAS is a proof-of-concept logistics and risk-monitoring dashboard created to explore how data and visualization could support **Johnson & Johnson Advanced Therapies Supply Chain (ATSC)** operations.
 
-The project combines **synthetic shipment data**, **public hospital information**, and **historical traffic data** to identify shipments that may be at greater risk of missing their delivery window.
+The project combines **synthetic shipment data**, **public hospital information**, and **historical New Jersey traffic data** to identify time-sensitive shipments that may require additional attention.
 
-> **Note:** ATLAS is an independent portfolio project. Shipment data is synthetic and does not represent Johnson & Johnson operational data.
+> **Note:** ATLAS is an independent portfolio project and does not use Johnson & Johnson operational data. All shipment records are synthetic.
 
 ---
 
@@ -20,32 +20,81 @@ The Tableau dashboard provides a centralized view of shipment activity, includin
 - Shipment distribution by risk level
 - Geographic shipment risk map
 - Priority shipment details
-- Interactive filtering by risk level and individual shipments
+- Interactive filtering by risk level
+- Individual shipment selection through the map
+
+---
+
+## Why I Built ATLAS
+
+The idea for ATLAS came from my experience working as an Uber Eats delivery driver.
+
+Traffic was one of the biggest challenges I encountered. A trip that should have taken twenty minutes could quickly become forty because of an accident, roadwork, or unexpected congestion. Over time, I began learning which roads to avoid, when certain areas became congested, and which alternate routes could save time.
+
+That experience showed me how valuable transportation data can be when something needs to arrive on schedule.
+
+When I learned more about **Advanced Therapies Supply Chain**, I saw a much more important version of that same logistics problem. Advanced therapies can involve a complex journey between treatment centers and manufacturing operations before ultimately reaching the patient. Unlike food delivery, a process this sensitive cannot depend on someone simply knowing the best route. Operations teams need data that can help identify potential issues early and support informed decision-making.
+
+That led me to build **ATLAS — Advanced Therapies Logistics & Scheduling**.
+
+The goal is not to recreate Johnson & Johnson's actual supply chain. Instead, ATLAS explores how logistics data, historical transportation patterns, and dashboarding could be combined to help an operations team quickly understand what is happening and which shipments may need attention.
+
+---
+
+## Core Question
+
+ATLAS was designed around one simple question:
+
+> **Which shipments may be at risk and require attention?**
+
+The project combines timing and transportation information to create a simple risk-monitoring view.
+
+For example, a shipment with a limited remaining delivery buffer traveling toward a county with relatively higher historical traffic risk may receive a higher ATLAS risk score.
 
 ---
 
 ## How ATLAS Works
 
-Each synthetic shipment is assigned a risk level using information related to:
+### 1. Timing Risk
 
-### Timing Risk
-Measures how much time remains between the estimated arrival and the shipment's delivery deadline.
+Each shipment includes:
 
-Lower remaining buffer indicates greater timing risk.
+- Scheduled arrival
+- Estimated arrival
+- Delivery deadline
+- Remaining delivery buffer
 
-### Traffic Risk
-Uses historical New Jersey traffic incident data to estimate relative transportation risk by destination county.
+A smaller remaining time buffer represents greater timing risk.
 
-### ATLAS Risk Score
-Timing and traffic risk are combined into a single score used to prioritize shipments.
+---
 
-Shipments are categorized as:
+### 2. Traffic Risk
 
-- 🔴 **High Risk**
-- 🟡 **Medium Risk**
-- 🟢 **Low Risk**
+Historical New Jersey traffic incidents are aggregated by county to create a relative transportation-risk measure.
 
-The dashboard allows users to quickly identify shipments that may require additional attention.
+Factors in the traffic dataset include information such as:
+
+- Accident location
+- County
+- Start and end time
+- Severity
+- Weather conditions
+
+The original traffic dataset contains approximately **7.7 million U.S. traffic incidents**, which was filtered to New Jersey for this project.
+
+---
+
+### 3. ATLAS Risk Score
+
+Timing risk and traffic risk are combined into a single **ATLAS Risk Score**.
+
+Shipments are then grouped into simple operational categories:
+
+- 🔴 **High Risk** — shipment may require attention
+- 🟡 **Medium Risk** — possible delay or reduced delivery buffer
+- 🟢 **Low Risk** — shipment appears to be on schedule
+
+These categories are intended to make it easier for an operations team to quickly prioritize shipments.
 
 ---
 
@@ -53,21 +102,42 @@ The dashboard allows users to quickly identify shipments that may require additi
 
 ### Hospital Data
 
-Hospital information comes from the **Centers for Medicare & Medicaid Services (CMS) Hospital General Information dataset**.
+**Source:** Centers for Medicare & Medicaid Services (CMS)  
+**Dataset:** Hospital General Information
 
-The dataset was filtered to include only hospitals located in New Jersey and provides potential shipment destinations.
+CMS provides public information on thousands of Medicare-registered hospitals across the United States.
 
-### Traffic Data
+For ATLAS, the data was filtered to hospitals located in **New Jersey** and reduced to relevant fields such as:
 
-Historical traffic incident data was derived from the **US Accidents dataset** and filtered to New Jersey.
+- Facility ID
+- Hospital name
+- Address
+- City
+- County
+- ZIP code
 
-Traffic information was cleaned and aggregated by county to create a relative traffic-risk measure.
+These hospitals serve as possible destinations for the synthetic shipments.
 
-### Shipment Data
+---
 
-Shipment records used in ATLAS are **synthetically generated for demonstration purposes**.
+### Historical Traffic Data
 
-The synthetic data includes fields such as:
+**Source:** US Accidents Dataset  
+**Original dataset:** approximately 7.7 million U.S. traffic incidents
+
+The dataset was filtered to New Jersey and cleaned to retain relevant transportation information.
+
+Traffic incidents were then aggregated by county to estimate relative transportation risk.
+
+---
+
+### Synthetic Shipment Data
+
+Real medical shipment data is private, so ATLAS uses a **synthetically generated shipment dataset**.
+
+The current proof of concept contains **50 synthetic shipments** originating in New Jersey and traveling to hospital destinations throughout the state.
+
+Each shipment includes fields such as:
 
 - Shipment ID
 - Origin
@@ -76,43 +146,96 @@ The synthetic data includes fields such as:
 - Scheduled arrival
 - Estimated arrival
 - Delivery deadline
-- Remaining buffer
-- Temperature
-- Timing risk
-- Traffic risk
+- Remaining delivery buffer
+- Package temperature
+- Timing risk score
+- Traffic risk score
 - ATLAS risk score
 - Risk level
 
+Using synthetic shipment data allows the dashboard to demonstrate the logistics concept without using confidential company information.
+
 ---
 
-## Data Pipeline
+## Project Methodology
 
-The project was built in several stages:
+### Step 1 — Clean Hospital Data
 
-1. **Hospital Data Cleaning**
-   - Filter CMS hospital data to New Jersey
-   - Select relevant hospital and location fields
-   - Prepare hospitals for use as shipment destinations
+The CMS Hospital General Information dataset was:
 
-2. **Traffic Data Cleaning**
-   - Filter the US Accidents dataset to New Jersey
-   - Clean timestamps and missing values
-   - Calculate incident duration
-   - Aggregate traffic activity by county
-   - Generate county-level traffic risk scores
+- Filtered to New Jersey
+- Reduced to relevant hospital and location fields
+- Cleaned for use as shipment destinations
 
-3. **Synthetic Shipment Generation**
-   - Generate 50 synthetic advanced-therapy shipments
-   - Assign New Jersey hospital destinations
-   - Create shipment timing information
-   - Merge county-level traffic risk
-   - Calculate ATLAS risk scores and risk categories
+---
 
-4. **Dashboard Development**
-   - Build an interactive Tableau dashboard
-   - Visualize shipment risk levels
-   - Map destination risk geographically
-   - Surface priority shipments for review
+### Step 2 — Clean Traffic Data
+
+The US Accidents dataset was:
+
+- Filtered to New Jersey
+- Reduced to relevant traffic fields
+- Cleaned for missing values and timestamps
+- Used to calculate incident duration
+- Aggregated by county
+- Converted into relative county-level traffic risk scores
+
+---
+
+### Step 3 — Generate Synthetic Shipments
+
+A synthetic shipment dataset was created with:
+
+- New Jersey hospital destinations
+- Scheduled arrival times
+- Estimated arrival times
+- Delivery deadlines
+- Remaining delivery buffers
+- Temperature values
+
+Traffic risk was then merged into each shipment based on destination county.
+
+---
+
+### Step 4 — Calculate Shipment Risk
+
+Timing and traffic information were combined to calculate an **ATLAS Risk Score**.
+
+Each shipment was classified as:
+
+- High Risk
+- Medium Risk
+- Low Risk
+
+The resulting dataset became the source for the Tableau dashboard.
+
+---
+
+### Step 5 — Build the Dashboard
+
+The final Tableau dashboard brings the different sources together into one operational view focused on:
+
+- Shipment volume
+- At-risk shipments
+- Remaining delivery buffer
+- Shipment risk distribution
+- Hospital destinations
+- Geographic transportation risk
+- Priority deliveries
+
+The goal is to turn several different data sources into a simple dashboard that helps an operations team understand **what is happening, what may become a problem, and where action may be needed**.
+
+---
+
+## Dashboard Interactivity
+
+ATLAS includes several interactive Tableau features:
+
+- Click a **risk level** to filter shipments
+- Click an individual **map pin** to isolate the corresponding shipment
+- Hover over map points to view shipment and destination information
+- Review shipment risk directly in the priority table
+- Scroll through shipment records for additional detail
 
 ---
 
@@ -122,7 +245,8 @@ The project was built in several stages:
 - **pandas**
 - **Jupyter Notebook**
 - **Tableau Public**
-- **Git / GitHub**
+- **Git**
+- **GitHub**
 - **CMS Hospital General Information**
 - **US Accidents Dataset**
 
@@ -131,7 +255,7 @@ The project was built in several stages:
 ## Project Structure
 
 ```text
-ATLAS/
+atlas-supply-chain-poc/
 │
 ├── data/
 │   ├── raw/
@@ -143,48 +267,41 @@ ATLAS/
 │   └── shipment_generation.ipynb
 │
 ├── dashboard/
-│   ├── ATLAS_Dashboard.twbx
-│
+│   └── ATLAS_Dashboard.twbx
 │
 ├── images/
+│   └── Dashboard Preview.png
 │
 └── README.md
 ```
 
-*File and folder names may vary slightly depending on the current repository structure.*
-
----
-
-## Dashboard Interactivity
-
-ATLAS includes several interactive Tableau features:
-
-- Select a **risk level** to filter the dashboard
-- Select a **shipment location on the map** to view its corresponding shipment details
-- Hover over map points to view shipment and hospital information
-- Scroll through priority shipment records for additional detail
+*Exact file names may vary slightly as the project evolves.*
 
 ---
 
 ## Purpose
 
-Advanced therapies can involve highly time-sensitive logistics, where transportation delays may affect the ability to deliver a therapy within its required window.
+ATLAS was created as a personal proof of concept for **Johnson & Johnson Advanced Therapies Supply Chain**.
 
-ATLAS explores how data from multiple sources could be combined into a simple operational view that helps identify:
+The project allowed me to explore how several areas of data work can come together in a real operational use case:
 
-- Which shipments require attention
-- Where transportation risk may be higher
-- How much delivery buffer remains
-- Which shipments should be prioritized for review
+- Data cleaning
+- Data integration
+- Synthetic data generation
+- Risk modeling
+- Transportation analytics
+- Geographic visualization
+- Dashboard development
+- Operational decision support
 
-The project was created as a personal proof of concept to demonstrate the use of **data engineering, risk scoring, visualization, and logistics analytics** in a healthcare-focused setting.
+Most importantly, the project focuses on the idea that data is most useful when it helps someone identify a potential problem early enough to act.
 
 ---
 
 ## Disclaimer
 
-This project is an independent educational and portfolio project.
+ATLAS is an independent educational and portfolio project.
 
 **Johnson & Johnson is not affiliated with, sponsoring, or endorsing this project.**
 
-All shipment records are synthetic. Public datasets are used solely for analytical and demonstration purposes.
+The project does not contain confidential or proprietary Johnson & Johnson information. All shipment records are synthetic, and external datasets used in the project are publicly available.
