@@ -281,7 +281,9 @@ atlas-supply-chain-poc/
 
 ## Purpose
 
-ATLAS was created as a personal proof of concept for **Johnson & Johnson Advanced Therapies Supply Chain**.
+ATLAS was created as a personal proof of concept while I was preparing for an interview for a **Johnson & Johnson Advanced Therapies Supply Chain (ATSC) co-op**.
+
+I wanted to go beyond simply researching the role and instead build something that helped me better understand the kinds of logistics and operational challenges an advanced therapies supply chain team may encounter.
 
 The project allowed me to explore how several areas of data work can come together in a real operational use case:
 
@@ -295,6 +297,8 @@ The project allowed me to explore how several areas of data work can come togeth
 - Operational decision support
 
 Most importantly, the project focuses on the idea that data is most useful when it helps someone identify a potential problem early enough to act.
+
+ATLAS is not intended to recreate Johnson & Johnson's actual supply chain. It is an independent learning project built to better understand the role, the business problem, and how data could support decision-making in a time-sensitive logistics environment.
 
 ---
 
