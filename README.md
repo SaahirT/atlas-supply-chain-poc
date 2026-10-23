@@ -144,7 +144,7 @@ ATLAS/
 │
 ├── dashboard/
 │   ├── ATLAS_Dashboard.twbx
-│   └── ATLAS_Dashboard.png
+│
 │
 ├── images/
 │
