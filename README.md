@@ -12,6 +12,8 @@ The project combines **synthetic shipment data**, **public hospital information*
 
 ![ATLAS Dashboard](images/Dashboard%20Preview.png)
 
+[View the interactive Tableau dashboard](https://public.tableau.com/app/profile/s.t7042/viz/ATLASAdvancedTherapiesLogisticsScheduling/Dashboard1)
+
 The Tableau dashboard provides a centralized view of shipment activity, including:
 
 - Total shipments
